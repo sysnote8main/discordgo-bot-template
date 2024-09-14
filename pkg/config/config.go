@@ -19,6 +19,7 @@ type Config struct {
 	ConfigVersion string `toml:"configVersion"`
 	Token         string `toml:"token"`
 	Prefix        string `toml:"prefix"`
+	GuildId       string `toml:"guildId"`
 }
 
 func configFileExists() bool {

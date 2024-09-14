@@ -11,5 +11,5 @@ type TextCommand struct {
 
 type SlashCommand struct {
 	Command     *discordgo.ApplicationCommand
-	HandlerFunc func(s *discordgo.Session, event *discordgo.InteractionCreate, args []string) error
+	HandlerFunc func(s *discordgo.Session, event *discordgo.InteractionCreate) error
 }
