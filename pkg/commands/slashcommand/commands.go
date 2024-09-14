@@ -22,4 +22,25 @@ func Register(cmdManager *commands.SlashCommandManager) {
 			})
 		},
 	})
+	cmdManager.AddCommand(commands.SlashCommand{
+		Command: &discordgo.ApplicationCommand{
+			Name:        "help",
+			Description: "Help Command",
+		},
+		HandlerFunc: func(s *discordgo.Session, event *discordgo.InteractionCreate) error {
+			return s.InteractionRespond(event.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Embeds: []*discordgo.MessageEmbed{
+						{
+							Title:       "Command List",
+							Description: "All commands of slash command",
+							Fields:      cmdManager.GetHelpCommandFields(),
+						},
+					},
+					Flags: discordgo.MessageFlagsEphemeral,
+				},
+			})
+		},
+	})
 }

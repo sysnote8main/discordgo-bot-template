@@ -22,12 +22,12 @@ func (m *SlashCommandManager) ExistCommand(cmdName string) bool {
 
 func (m *SlashCommandManager) AddCommand(command SlashCommand) {
 	m.cmdMap[command.Command.Name] = command
-	// TODO add to help field map
+	m.helpFieldMap[command.Command.Name] = makeFieldFromSlashCommand(command)
 }
 
 func (m *SlashCommandManager) RemoveCommand(cmdName string) {
 	delete(m.cmdMap, cmdName)
-	// TODO remove from help field map
+	delete(m.helpFieldMap, cmdName)
 }
 
 func (m *SlashCommandManager) GetAllCommandKeys() []string {
@@ -44,7 +44,11 @@ func (m *SlashCommandManager) GetAllRegisteredCommandKeys() []string {
 	return m.registeredCmdIds
 }
 
-// TODO add help field getter
+func (m *SlashCommandManager) GetHelpCommandFields() []*discordgo.MessageEmbedField {
+	return slices.SortedFunc(maps.Values(m.helpFieldMap), func(a, b *discordgo.MessageEmbedField) int {
+		return strings.Compare(a.Name, b.Name)
+	})
+}
 
 func (m *SlashCommandManager) OnEvent(session *discordgo.Session, event *discordgo.InteractionCreate) {
 	v, ok := m.cmdMap[event.ApplicationCommandData().Name]
@@ -74,6 +78,13 @@ func (m *SlashCommandManager) Register(session *discordgo.Session, guildId strin
 		}
 	}
 	slog.Info("Finished to register slash commands.", slog.Int("allCmdCount", len(m.cmdMap)), slog.Int("registeredCmdCount", len(m.registeredCmdIds)))
+}
+
+func makeFieldFromSlashCommand(cmd SlashCommand) *discordgo.MessageEmbedField {
+	return &discordgo.MessageEmbedField{
+		Name:  cmd.Command.Name,
+		Value: cmd.Command.Description,
+	}
 }
 
 func NewSlashCommandManager() *SlashCommandManager {
