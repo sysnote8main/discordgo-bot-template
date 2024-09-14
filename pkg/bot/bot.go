@@ -15,13 +15,14 @@ import (
 )
 
 var (
-	textCmdManager = commands.NewTextCommandManager()
+	textCmdManager *commands.TextCommandManager
 )
 
 func init() {
 	config.ReadConfig()
+
+	textCmdManager = commands.NewTextCommandManager(config.GetConfig().Prefix)
 	textcommand.Register(textCmdManager)
-	// textCmdManager.AddCommand()
 }
 
 func Run() {

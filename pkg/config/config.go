@@ -37,6 +37,8 @@ func ReadConfig() {
 			slog.Info("Successfully to load config")
 			if config.ConfigVersion == GetDefault().ConfigVersion {
 				return
+			} else {
+				slog.Warn("Config version is miss matched. Replacing new one.")
 			}
 		}
 		slog.Warn("Failed to read config", slog.Any("error", err))
